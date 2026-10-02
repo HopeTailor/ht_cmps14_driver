@@ -2,6 +2,8 @@
 
 #include "esp_err.h"
 #include "ht_i2c.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #define CMPS14_12C_ADDRESS           0x60
 #define CMPS14_REG_COMMAND           0x00
@@ -67,7 +69,6 @@ esp_err_t ht_cmps14_init(i2c_master_dev_handle_t dev_handle);
 
 esp_err_t ht_cmps14_read_all(i2c_master_dev_handle_t dev_handle, ht_cmps14_data_t *data);
 
-esp_err_t ht_cmps14_send_command(i2c_master_dev_handle_t dev_handle, uint8_t cmd);
+esp_err_t ht_cmps14_store_calibration(i2c_master_dev_handle_t dev_handle);
 
-
-
+esp_err_t ht_cmps14_erase_calibration(i2c_master_dev_handle_t dev_handle);

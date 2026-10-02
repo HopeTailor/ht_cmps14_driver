@@ -47,7 +47,54 @@ esp_err_t ht_cmps14_read_all(i2c_master_dev_handle_t dev_handle, ht_cmps14_data_
     return ESP_OK;
 }
 
-esp_err_t ht_cmps14_send_command(i2c_master_dev_handle_t dev_handle, uint8_t cmd) {
+esp_err_t ht_cmps14_store_calibration(i2c_master_dev_handle_t dev_handle) {
+    uint8_t cmd = 0xF0;
+    esp_err_t err = ht_i2c_write_reg8(dev_handle, CMPS14_REG_COMMAND, &cmd, 1);
+    if(err != ESP_OK) {
+        return err;
+    } 
+    vTaskDelay(pdMS_TO_TICKS(20));
 
+    uint8_t cmd = 0xF5;
+    esp_err_t err = ht_i2c_write_reg8(dev_handle, CMPS14_REG_COMMAND, &cmd, 1);
+    if(err != ESP_OK) {
+        return err;
+    } 
+    vTaskDelay(pdMS_TO_TICKS(20));
+
+    uint8_t cmd = 0xF6;
+    esp_err_t err = ht_i2c_write_reg8(dev_handle, CMPS14_REG_COMMAND, &cmd, 1);
+    if(err != ESP_OK) {
+        return err;
+    } 
+    vTaskDelay(pdMS_TO_TICKS(20));
+
+    return ESP_OK;
 }
+
+esp_err_t ht_cmps14_erase_calibration(i2c_master_dev_handle_t dev_handle) {
+    uint8_t cmd = 0xE0;
+    esp_err_t err = ht_i2c_write_reg8(dev_handle, CMPS14_REG_COMMAND, &cmd, 1);
+    if(err != ESP_OK) {
+        return err;
+    } 
+    vTaskDelay(pdMS_TO_TICKS(20));
+
+    uint8_t cmd = 0xE5;
+    esp_err_t err = ht_i2c_write_reg8(dev_handle, CMPS14_REG_COMMAND, &cmd, 1);
+    if(err != ESP_OK) {
+        return err;
+    } 
+    vTaskDelay(pdMS_TO_TICKS(20));
+
+    uint8_t cmd = 0xE2;
+    esp_err_t err = ht_i2c_write_reg8(dev_handle, CMPS14_REG_COMMAND, &cmd, 1);
+    if(err != ESP_OK) {
+        return err;
+    } 
+    vTaskDelay(pdMS_TO_TICKS(300));
+
+    return ESP_OK;
+}
+
 
