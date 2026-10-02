@@ -30,15 +30,21 @@
 #define CMPS14_REG_GYRO_Z_L      0x17
 #define CMPS14_REG_TEMP_H        0x18
 #define CMPS14_REG_TEMP_L        0x19
+#define CMPS14_REG_PITCH_16_H    0x1A
+#define CMPS14_REG_PITCH_16_L    0x1B
+#define CMPS14_REG_ROLL_16_H     0x1C
+#define CMPS14_REG_ROLL_16_L     0x1D
 #define CMPS14_REG_CAL_STATE     0x1E
 #define CMPS14_CMD_STORE_PROFILE 0x98
 #define CMPS14_CMD_ERASE_PROFILE 0x99
 
 typedef struct {
-    float yaw_16bit;
+    float yaw;
+    float pitch;
+    float roll;
     uint8_t yaw_8bit;
-    int8_t pitch;
-    int8_t roll;
+    int8_t pitch_8bit;
+    int8_t roll_8bit;
     int16_t mag_x;
     int16_t mag_y;
     int16_t mag_z;
