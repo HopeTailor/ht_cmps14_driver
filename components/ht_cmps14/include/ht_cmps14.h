@@ -61,8 +61,10 @@ typedef struct {
     uint8_t calib_mag;
 } ht_cmps14_data_t;
 
-esp_err_t ht_cmps14_init(i2c_master_bus_handle_t bus_handle, i2c_master_dev_handle_t *dev);
+esp_err_t ht_cmps14_init(i2c_master_dev_handle_t dev_handle);
+
 esp_err_t ht_cmps14_read_all(i2c_master_dev_handle_t dev_handle, ht_cmps14_data_t *data);
+
 esp_err_t ht_cmps14_send_command(i2c_master_dev_handle_t dev_handle, uint8_t cmd);
 
 
