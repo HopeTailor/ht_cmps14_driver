@@ -5,7 +5,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define CMPS14_12C_ADDRESS           0x60
+#define CMPS14_I2C_ADDRESS           0x60
 #define CMPS14_REG_COMMAND           0x00
 #define CMPS14_REG_BEARING_8BIT      0x01
 #define CMPS14_REG_BEARING_16_H      0x02
