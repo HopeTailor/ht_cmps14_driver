@@ -39,10 +39,10 @@ esp_err_t ht_cmps14_read_all(i2c_master_dev_handle_t dev_handle, ht_cmps14_data_
     data->temperature = (int16_t)((buf[23] << 8) | buf[24]);
 
     uint8_t cal = buf[29];
-    data->calib_mag    = cal & 0x03;
-    data->calib_accel  = (cal >> 2) & 0x03;
-    data->calib_gyro   = (cal >> 4) & 0x03;
-    data->calib_system = (cal >> 6) & 0x03;
+    data->calibration.mag    = cal & 0x03;
+    data->calibration.accel  = (cal >> 2) & 0x03;
+    data->calibration.gyro   = (cal >> 4) & 0x03;
+    data->calibration.system = (cal >> 6) & 0x03;
 
     return ESP_OK;
 }
