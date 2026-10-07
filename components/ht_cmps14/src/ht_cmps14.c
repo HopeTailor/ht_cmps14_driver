@@ -10,50 +10,41 @@ esp_err_t ht_cmps14_init(i2c_master_dev_handle_t dev_handle) {
 }
 
 esp_err_t ht_cmps14_read_all(i2c_master_dev_handle_t dev_handle, ht_cmps14_data_t *data) {
-    uint8_t buf_angles[5], buf_imu[18], buf_ext[7];
-    esp_err_t err = ht_i2c_read_reg8(dev_handle, CMPS14_REG_BEARING_8BIT, buf_angles, 5);
+    uint8_t buf[30];
+   
+    esp_err_t err = ht_i2c_read_reg8(dev_handle, CMPS14_REG_BEARING_8BIT, buf, 30);
     if(err != ESP_OK) {
         return err;
     }
 
-    err = ht_i2c_read_reg8(dev_handle, CMPS14_REG_MAG_X_H, buf_imu, 18);
-    if(err != ESP_OK) {
-        return err;
-    }
+    data->yaw_8bit = buf[0];
+    data->yaw = ((uint16_t)((buf[1] << 8) | buf[2])) / 10.0f;
+    data->pitch_8bit = (int8_t)buf[3];
+    data->roll_8bit = (int8_t)buf[4];
 
-    err = ht_i2c_read_reg8(dev_handle, CMPS14_REG_TEMP_H, buf_ext, 7);
-    if(err != ESP_OK) {
-        return err;
-    }
+    data->mag_x   = (int16_t)((buf[5]  << 8) | buf[6]);
+    data->mag_y   = (int16_t)((buf[7]  << 8) | buf[8]);
+    data->mag_z   = (int16_t)((buf[9]  << 8) | buf[10]);
 
-    data->yaw_8bit = buf_angles[0];
-    data->pitch_8bit = (int8_t)buf_angles[3];
-    data->roll_8bit = (int8_t)buf_angles[4];
+    data->accel_x = (int16_t)((buf[11] << 8) | buf[12]);
+    data->accel_y = (int16_t)((buf[13] << 8) | buf[14]);
+    data->accel_z = (int16_t)((buf[15] << 8) | buf[16]);
 
-    data->yaw = ((uint16_t)((buf_angles[1] << 8) | buf_angles[2])) / 10.0f;
-    data->pitch = ((int16_t)((buf_ext[2] << 8) | buf_ext[3])) / 10.0f;
-    data->roll = ((int16_t)((buf_ext[4] << 8) | buf_ext[5])) / 10.0f;
+    data->gyro_x  = (int16_t)((buf[17] << 8) | buf[18]);
+    data->gyro_y  = (int16_t)((buf[19] << 8) | buf[20]);
+    data->gyro_z  = (int16_t)((buf[21] << 8) | buf[22]);
 
-    data->mag_x   = (int16_t)((buf_imu[0]  << 8) | buf_imu[1]);
-    data->mag_y   = (int16_t)((buf_imu[2]  << 8) | buf_imu[3]);
-    data->mag_z   = (int16_t)((buf_imu[4]  << 8) | buf_imu[5]);
+    data->temperature = (int16_t)((buf[23] << 8) | buf[24]);
 
-    data->accel_x = (int16_t)((buf_imu[6]  << 8) | buf_imu[7]);
-    data->accel_y = (int16_t)((buf_imu[8]  << 8) | buf_imu[9]);
-    data->accel_z = (int16_t)((buf_imu[10] << 8) | buf_imu[11]);
+    data->pitch = ((int16_t)((buf[25] << 8) | buf[26])) / 10.0f;
+    data->roll = ((int16_t)((buf[27] << 8) | buf[28])) / 10.0f;
 
-    data->gyro_x  = (int16_t)((buf_imu[12] << 8) | buf_imu[13]);
-    data->gyro_y  = (int16_t)((buf_imu[14] << 8) | buf_imu[15]);
-    data->gyro_z  = (int16_t)((buf_imu[16] << 8) | buf_imu[17]);
-
-    data->temperature = (int16_t)((buf_ext[0] << 8) | buf_ext[1]);
-
-    uint8_t cal = buf_ext[6];
+    uint8_t cal = buf[29];
     data->calibration.mag    = cal & 0x03;
     data->calibration.accel  = (cal >> 2) & 0x03;
     data->calibration.gyro   = (cal >> 4) & 0x03;
     data->calibration.system = (cal >> 6) & 0x03;
-    
+
     return ESP_OK;
 }
 
