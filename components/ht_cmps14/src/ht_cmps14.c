@@ -64,6 +64,26 @@ esp_err_t ht_cmps14_read_all(i2c_master_dev_handle_t dev_handle, ht_cmps14_data_
     return ESP_OK;
 }
 
+esp_err_t ht_cmps14_read_yaw_raw(i2c_master_dev_handle_t dev_handle, uint16_t *yaw_deci_deg) {
+    if(yaw_deci_deg == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint8_t buf[2];
+    esp_err_t err = ht_i2c_read_reg8(dev_handle, CMPS14_REG_BEARING_16_H, buf, 2);
+    if(err != ESP_OK) {
+        return err;
+    }
+
+    uint16_t raw = ((uint16_t)buf[0] << 8) | buf[1];
+    if(raw > CMPS14_YAW_RAW_MAX) {
+        return ESP_ERR_INVALID_RESPONSE;
+    }
+
+    *yaw_deci_deg = raw;
+    return ESP_OK;
+}
+
 esp_err_t ht_cmps14_store_calibration(i2c_master_dev_handle_t dev_handle) {
     // The store calibration command requires a specific 3-byte sequence (0xF0, 0xF5, 0xF6)
     // written to the command register with strict 20ms delays between them.

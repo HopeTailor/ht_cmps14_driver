@@ -52,6 +52,9 @@
 /* Calibration Commands */
 #define CMPS14_CMD_STORE_CALIBRATION 0x98
 #define CMPS14_CMD_ERASE_CALIBRATION 0x99
+/** Max valid raw 16-bit yaw (0.1 deg units) */
+#define CMPS14_YAW_RAW_MAX  3599
+
 
 /**
  * @brief Comprehensive data structure holding all CMPS14 sensor readings.
@@ -97,6 +100,12 @@ typedef struct {
  * @return esp_err_t ESP_OK if sensor responds, or ESP_ERR_NOT_FOUND/TIMEOUT otherwise.
  */
 esp_err_t ht_cmps14_init(i2c_master_dev_handle_t dev_handle);
+
+/**
+ * @brief Fast read: 16-bit yaw only (2 bytes), in 0.1 degree units (0..3599).
+ *        Returns ESP_ERR_INVALID_RESPONSE if the value is out of range (corrupted transfer).
+ */
+esp_err_t ht_cmps14_read_yaw_raw(i2c_master_dev_handle_t dev_handle, uint16_t *yaw_deci_deg);
 
 /**
  * @brief Reads all 30 bytes of data (angles, IMU, temperature, calibration) sequentially.
